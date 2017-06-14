@@ -131,6 +131,9 @@ pub fn middleware(app: Arc<App>) -> MiddlewareBuilder {
     api_router.get("/categories/:category_id", C(category::show));
     api_router.get("/category_slugs", C(category::slugs));
     api_router.get("/users/:user_id", C(user::show));
+    api_router.get("/users/:user_id/favorited", C(user::favorited));
+    api_router.put("/users/:user_id/favorite", C(user::favorite));
+    api_router.delete("/users/:user_id/favorite", C(user::unfavorite));
     let api_router = Arc::new(R404(api_router));
 
     let mut router = RouteBuilder::new();

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import ajax from 'ic-ajax';
 
 export default Ember.Route.extend({
     queryParams: {
@@ -12,6 +13,17 @@ export default Ember.Route.extend({
 
         controller.set('fetchingFeed', true);
         controller.set('crates', this.get('data.crates'));
+        controller.set('user', model.user);
+        controller.set(
+            'allowFavorting', 
+            this.session.get('currentUser') != model.user
+        );
+        
+        if (controller.get('allowFavorting')) {
+            ajax(`/api/v1/users/${model.user.id}/favorited`)
+                .then((d) => controller.set('favorited', d.favorited))
+                .finally(() => controller.set('fetchingFavorite', false));
+        }
     },
 
     model(params) {
@@ -33,5 +45,6 @@ export default Ember.Route.extend({
                 }
             }
         );
-    },
+    }
+
 });

@@ -16,4 +16,20 @@ export default Ember.Controller.extend(PaginationMixin, {
     currentSortBy: computed('sort', function() {
         return (this.get('sort') === 'downloads') ? 'Downloads' : 'Alphabetical';
     }),
+
+    fetchingFavorite: false,
+    favorited: false,
+
+    actions: {
+        toggleFavorite() {
+            this.set('fetchingFavorite', true);
+
+            let owner = this.get('user');
+            let op = this.toggleProperty('favorited') ?
+                owner.favorite() : owner.unfavorite();
+
+            return op.finally(() => this.set('fetchingFavorite', false));
+        },
+    },
+
 });
