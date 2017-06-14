@@ -15,4 +15,9 @@ export default DS.Model.extend({
     unfavorite() {
         return this.store.adapterFor('user').unfavorite(this.get('id'));
     },
+
+    favorite_users() {
+        return this.store.adapterFor('user').favorite_users(this.get('id'));
+    },
+
 });

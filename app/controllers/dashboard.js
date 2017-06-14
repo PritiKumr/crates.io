@@ -14,6 +14,7 @@ export default Ember.Controller.extend({
         this.myCrates = [];
         this.myFollowing = [];
         this.myFeed = [];
+        this.favoriteUsers = [];
     },
 
     visibleCrates: computed('myCreates', function() {
@@ -24,12 +25,20 @@ export default Ember.Controller.extend({
         return this.get('myFollowing').slice(0, TO_SHOW);
     }),
 
+    visibleFavorites: computed('favoriteUsers', function() {
+        return this.get('favoriteUsers').slice(0, TO_SHOW);
+    }),
+
     hasMoreCrates: computed('myCreates', function() {
         return this.get('myCrates.length') > TO_SHOW;
     }),
 
     hasMoreFollowing: computed('myFollowing', function() {
         return this.get('myFollowing.length') > TO_SHOW;
+    }),
+
+    hasMoreFavorites: computed('favoriteUsers', function() {
+        return this.get('favoriteUsers.length') > TO_SHOW;
     }),
 
     actions: {

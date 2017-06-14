@@ -1,7 +1,7 @@
 import ApplicationAdapter from './application';
  
 export default ApplicationAdapter.extend({
-   favorite(id) {
+    favorite(id) {
         return this.ajax(this.urlForFavoriteAction(id), 'PUT');
     },
 
@@ -11,5 +11,9 @@ export default ApplicationAdapter.extend({
 
     urlForFavoriteAction(id) {
         return `${this.buildURL('user', id)}/favorite`;
+    },
+
+    favorite_users(id) {
+        return this.ajax(`${this.buildURL('user', id)}/favorite_users`, 'GET');
     },
 });

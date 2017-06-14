@@ -15,8 +15,8 @@ export default Ember.Route.extend({
         controller.set('crates', this.get('data.crates'));
         controller.set('user', model.user);
         controller.set(
-            'allowFavorting', 
-            this.session.get('currentUser') != model.user
+            'allowFavorting',
+            this.session.get('currentUser') !== model.user
         );
         
         if (controller.get('allowFavorting')) {
