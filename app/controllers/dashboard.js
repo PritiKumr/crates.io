@@ -42,7 +42,7 @@ export default Ember.Controller.extend({
     }),
 
     actions: {
-        loadMore() {
+        loadMore: function() {
             this.set('loadingMore', true);
             var page = (this.get('myFeed').length / 10) + 1;
 
@@ -54,6 +54,12 @@ export default Ember.Controller.extend({
                 this.set('hasMore', data.meta.more);
             }).finally(() => {
                 this.set('loadingMore', false);
+            });
+        },
+
+        unfavoriteUser: function(user) {
+            this.store.adapterFor('user').unfavorite(user.id).then(() => {
+                this.get('favoriteUsers').users.removeObject(user);
             });
         }
     }

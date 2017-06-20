@@ -31,14 +31,13 @@ export default Ember.Route.extend(AuthenticatedRoute, {
             following: 1
         });
 
-        let favoriteUsers = this.store.query('crate', {
-            following: 1
-        });
+        let favoriteUsers = user.favoriteUsers();
         
 
         return Ember.RSVP.hash({
             myCrates,
-            myFollowing
+            myFollowing,
+            favoriteUsers,
         }).then((hash) => this.set('data', hash));
     }
 });
