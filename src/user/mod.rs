@@ -25,7 +25,7 @@ pub mod middleware;
 
 /// The model representing a row in the `users` database table.
 #[derive(Clone, Debug, PartialEq, Eq, Queryable, Identifiable, Associations)]
-#[has_many(favorite_users)]
+#[primary_key(id)]
 pub struct User {
     pub id: i32,
     pub email: Option<String>,
@@ -340,7 +340,6 @@ pub fn show(req: &mut Request) -> CargoResult<Response> {
 }
 
 #[derive(Insertable, Queryable, Identifiable, Associations)]
-#[belongs_to(User)]
 #[primary_key(user_id, target_id)]
 #[table_name="favorite_users"]
 pub struct FavoriteUser {
@@ -348,6 +347,7 @@ pub struct FavoriteUser {
     target_id: i32,
 }
 
+joinable!(favorite_users -> users(target_id));
 
 fn favorite_target(req: &mut Request) -> CargoResult<FavoriteUser> {
     let user = req.user()?;
@@ -395,20 +395,16 @@ pub fn favorited(req: &mut Request) -> CargoResult<Response> {
     Ok(req.json(&R { favorited: favorited }))
 }
 
-
-
-
-
 /// Handles the `GET /users/:user_id/favorite_users` route.
 pub fn favorite_users(req: &mut Request) -> CargoResult<Response> {
+
     let user_id: i32 = req.params()["user_id"].parse()
         .expect("User ID not found");
     let conn = req.db_conn()?;
 
-    let users = users::table.filter(users::id.eq_any(
-        favorite_users::table.select(favorite_users::target_id)
-            .filter(favorite_users::user_id.eq(user_id))
-        )).select(users::all_columns)
+    let users = users::table.inner_join(favorite_users::table)
+        .filter(favorite_users::user_id.eq(user_id))
+        .select(users::all_columns)
         .load::<User>(&*conn)?
         .into_iter().map(|u| u.encodable()).collect();
     
